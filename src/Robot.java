@@ -4,16 +4,8 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 
-enum ETrafficConditions {
-    Light,
-    Moderate,
-    Heavy,
-    MaxLength //add all other traffic values before this.
-}
-
 public class Robot implements Runnable {
     private final double MAX_METERS = 350.0d;
-    private final int ARBITRARY_SPEED = 80;
     private RoutePoint _curPt;
     private int _id;
     private ArrayList<RoutePoint> _rps;
@@ -39,9 +31,9 @@ public class Robot implements Runnable {
                 List<TunnelPoint> trafficPoints = getTrafficPoints();
                 if (trafficPoints != null) {
                     for(TunnelPoint tp : trafficPoints) {
-                        ETrafficConditions condition = generateRandomTrafficCondition();
+                        ETrafficConditions condition = Calculate.generateRandomTrafficCondition();
                         System.out.println(_id + " " + _curPt.date + ":" + tp.description + " is experiencing " +
-                                            condition + " traffic at speed " + getRandomSpeed(condition));
+                                            condition + " traffic at speed " + Calculate.getRandomSpeed(condition));
                     }
                 } else {
                     System.out.println(_id + " no tube found near current point: " + _curPt.lat + " " + _curPt.lon);
@@ -82,14 +74,6 @@ public class Robot implements Runnable {
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
-    }
-    private ETrafficConditions generateRandomTrafficCondition() {
-        int scale = (ETrafficConditions.MaxLength.ordinal() - 1);
-        return ETrafficConditions.values()[(int)Math.round(Math.random() * scale)];
-    }
-    private String getRandomSpeed(ETrafficConditions type) {
-        int scale = type.ordinal() + 1;
-        return String.format("%.2f km/hr", (ARBITRARY_SPEED * Math.random() / scale));
     }
     private ArrayList<TunnelPoint> getTrafficPoints() {
         ArrayList<TunnelPoint> tps = new ArrayList<TunnelPoint>();

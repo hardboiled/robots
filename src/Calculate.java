@@ -1,4 +1,12 @@
+enum ETrafficConditions {
+    Light,
+    Moderate,
+    Heavy,
+    MaxLength //add all other traffic values before this.
+}
+
 public class Calculate {
+    private static final int ARBITRARY_SPEED = 80;
     public static double distanceInMeters(double lat1, double lon1, double lat2, double lon2) {
         //http://stackoverflow.com/questions/120283/working-with-latitude-longitude-values-in-java#answer-9822531
         double a = 6378137, b = 6356752.314245, f = 1 / 298.257223563; // WGS-84 ellipsoid params
@@ -45,5 +53,14 @@ public class Calculate {
         double dist = b * A * (sigma - deltaSigma);
 
         return dist;
+    }
+
+    public static ETrafficConditions generateRandomTrafficCondition() {
+        int scale = (ETrafficConditions.MaxLength.ordinal() - 1);
+        return ETrafficConditions.values()[(int)Math.round(Math.random() * scale)];
+    }
+    public static String getRandomSpeed(ETrafficConditions type) {
+        int scale = type.ordinal() + 1;
+        return String.format("%.2f km/hr", (ARBITRARY_SPEED * Math.random() / scale));
     }
 }
