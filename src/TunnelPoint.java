@@ -7,7 +7,7 @@
  */
 import java.util.Comparator;
 
-public class TunnelPoint implements Comparable<TunnelPoint> {
+public class TunnelPoint {
     public String description;
     public double lat;
     public double lon;
@@ -16,15 +16,4 @@ public class TunnelPoint implements Comparable<TunnelPoint> {
         this.lat = Double.parseDouble(params[1]);
         this.lon = Double.parseDouble(params[2]);
     }
-    public int compareTo(TunnelPoint tp) {
-        return (this.lat > tp.lat) ? 1 : -1;
-    }
-    public static Comparator<TunnelPoint> TunnelPointComparator
-            = new Comparator<TunnelPoint>() {
-
-        public int compare(TunnelPoint tp1, TunnelPoint tp2) {
-            return tp1.compareTo(tp2);
-        }
-
-    };
 }
