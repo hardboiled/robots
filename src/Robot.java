@@ -30,14 +30,7 @@ public class Robot implements Runnable {
     public void run(){
         while (isRunning()) {
             if(advanceToNextPoint()) {
-                List<TunnelPoint> trafficPoints = getTrafficPoints();
-                if (trafficPoints != null) {
-                    for(TunnelPoint tp : trafficPoints) {
-                        ETrafficConditions condition = Calculate.generateRandomTrafficCondition();
-                        broadcastMessage(_id + " " + _curPt.date + ":" + tp.description + " is experiencing " +
-                                condition + " traffic at speed " + Calculate.getRandomSpeed(condition));
-                    }
-                } else {
+                if (!reportTrafficPoints()) {
                     broadcastMessage(_id + " no tube found near current point: " + _curPt.lat + " " + _curPt.lon);
                 }
             } else {
@@ -77,17 +70,20 @@ public class Robot implements Runnable {
             System.out.println(ex.getMessage());
         }
     }
-    private ArrayList<TunnelPoint> getTrafficPoints() {
-        ArrayList<TunnelPoint> tps = new ArrayList<TunnelPoint>();
+    private boolean reportTrafficPoints() {
+        boolean found = false;
         synchronized(_tps) {
             for (TunnelPoint tp : _tps) {
                 double meters = Calculate.distanceInMeters(_curPt.lat, _curPt.lon, tp.lat, tp.lon);
                 if (meters <= MAX_METERS) {
-                    tps.add(tp);
+                    found = true;
+                    ETrafficConditions condition = Calculate.generateRandomTrafficCondition();
+                    broadcastMessage(_id + " " + meters + " meters " + _curPt.date + ":" + tp.description + " is experiencing " +
+                            condition + " traffic at speed " + Calculate.getRandomSpeed(condition));
                 }
             }
         }
-        return (tps.size() > 0) ? tps : null;
+        return found;
     }
     private boolean advanceToNextPoint() {
         if (_rps.size() > 0) {
