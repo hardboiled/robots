@@ -61,6 +61,8 @@ public class Dispatcher {
         LinkedBlockingQueue<String> q = r.getMessageQueue();
         try {
             q.put("SHUTDOWN");
-        } catch(Exception ex) {}
+        } catch(Exception ex) {
+            System.out.println(ex.getMessage());
+        }
     }
 }
