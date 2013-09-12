@@ -11,7 +11,7 @@ public class Simulation {
     private final static int ROBOT1_ID = 5937;
     private final static int ROBOT2_ID = 6043;
     public static void main(String[] args) {
-        if (args.length > 0) redirectOutput(args[1]);
+        if (args.length > 0) redirectOutput(args[0]);
         final ArrayList<TunnelPoint> tps = readTunnelPoints();
         final LinkedList<RoutePoint> rps1 = readRoutePoints(ROBOT1_ID);
         final LinkedList<RoutePoint> rps2 = readRoutePoints(ROBOT2_ID);
