@@ -30,7 +30,9 @@ public class Dispatcher {
                             sendShutdown = true;
                             break;
                         }
-                    } catch (Exception ex) {}
+                    } catch (Exception ex) {
+                        System.out.println(ex.getMessage());
+                    }
                 }
                 if (sendShutdown) {
                     while (!rpQ.isEmpty()); //wait until done with existing points

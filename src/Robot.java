@@ -64,7 +64,9 @@ public class Robot implements Runnable {
                     break;
                 }
             }
-        } catch (Exception ex) {}
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
     }
     private void respondToDispatchMsg() {
         try {
@@ -75,7 +77,9 @@ public class Robot implements Runnable {
                     System.out.println(_id + " received SHUTDOWN message.");
                 }
             }
-        } catch (Exception ex){}
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
     }
     private ETrafficConditions generateRandomTrafficCondition() {
         int scale = (ETrafficConditions.MaxLength.ordinal() - 1);
@@ -101,7 +105,9 @@ public class Robot implements Runnable {
         if (_rps.size() > 0) {
             try {
                 Thread.sleep(3); //simulate delay for moving
-            } catch (Exception ex) {}
+            } catch (Exception ex) {
+                System.out.println(ex.getMessage());
+            }
             _curPt = _rps.remove(0);
             return true;
         }
