@@ -13,14 +13,16 @@ public class Robot implements Runnable {
     private boolean _isShutdown;
     private LinkedBlockingQueue<RoutePoint> _rpQueue;
     private LinkedBlockingQueue<String> _msgQueue;
+    private LinkedBlockingQueue<String> _dispatch;
 
-    public Robot(int id, List<TunnelPoint> tps){
+    public Robot(int id, List<TunnelPoint> tps, LinkedBlockingQueue<String> dispatch){
         _id = id;
         _tps = tps;
         _isShutdown = false;
         _rpQueue= new LinkedBlockingQueue<RoutePoint>(10);
         _msgQueue = new LinkedBlockingQueue<String>(10);
         _rps = new ArrayList<RoutePoint>();
+        _dispatch = dispatch;
     }
     public int getId() { return _id;}
     public LinkedBlockingQueue<String> getMessageQueue() { return _msgQueue; }
@@ -32,18 +34,18 @@ public class Robot implements Runnable {
                 if (trafficPoints != null) {
                     for(TunnelPoint tp : trafficPoints) {
                         ETrafficConditions condition = Calculate.generateRandomTrafficCondition();
-                        System.out.println(_id + " " + _curPt.date + ":" + tp.description + " is experiencing " +
-                                            condition + " traffic at speed " + Calculate.getRandomSpeed(condition));
+                        broadcastMessage(_id + " " + _curPt.date + ":" + tp.description + " is experiencing " +
+                                condition + " traffic at speed " + Calculate.getRandomSpeed(condition));
                     }
                 } else {
-                    System.out.println(_id + " no tube found near current point: " + _curPt.lat + " " + _curPt.lon);
+                    broadcastMessage(_id + " no tube found near current point: " + _curPt.lat + " " + _curPt.lon);
                 }
             } else {
                 getMorePoints();
             }
             respondToDispatchMsg();
         }
-        System.out.println(_id + " exiting.");
+        broadcastMessage(_id + " exiting.");
     }
     public boolean isRunning() {
         return !_isShutdown;
@@ -68,7 +70,7 @@ public class Robot implements Runnable {
             if((msg = _msgQueue.poll()) != null) {
                 if(msg.contentEquals("SHUTDOWN")) {
                     _isShutdown = true;
-                    System.out.println(_id + " received SHUTDOWN message.");
+                    broadcastMessage(_id + " received SHUTDOWN message.");
                 }
             }
         } catch (Exception ex) {
@@ -98,5 +100,12 @@ public class Robot implements Runnable {
             return true;
         }
         return false;
+    }
+    private void broadcastMessage(String msg) {
+        try {
+            _dispatch.put(msg);
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
     }
 }

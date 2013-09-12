@@ -6,6 +6,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class Simulation {
     private final static int ROBOT1_ID = 5937;
@@ -15,14 +16,14 @@ public class Simulation {
         final ArrayList<TunnelPoint> tps = readTunnelPoints();
         final LinkedList<RoutePoint> rps1 = readRoutePoints(ROBOT1_ID);
         final LinkedList<RoutePoint> rps2 = readRoutePoints(ROBOT2_ID);
-
+        final LinkedBlockingQueue<String> dispatch = new LinkedBlockingQueue<String>();
         Dispatcher d = new Dispatcher(new ArrayList<Robot>(){{
-            add(new Robot(ROBOT1_ID, tps));
-            add(new Robot(ROBOT2_ID, tps));
+            add(new Robot(ROBOT1_ID, tps, dispatch));
+            add(new Robot(ROBOT2_ID, tps, dispatch));
         }}, new HashMap<Integer, LinkedList<RoutePoint>>() {{
             put(ROBOT1_ID, rps1);
             put(ROBOT2_ID, rps2);
-        }});
+        }}, dispatch);
         d.startDispatching();
     }
     private static ArrayList<TunnelPoint> readTunnelPoints() {

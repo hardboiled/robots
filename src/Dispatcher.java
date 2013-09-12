@@ -6,10 +6,12 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class Dispatcher {
     private List<Robot> _robots;
     private HashMap<Integer, LinkedList<RoutePoint>> _rpMap;
+    private LinkedBlockingQueue<String> _dispatch;
 
-    Dispatcher(List<Robot> list, HashMap<Integer, LinkedList<RoutePoint>> rpMap) {
+    Dispatcher(List<Robot> list, HashMap<Integer, LinkedList<RoutePoint>> rpMap, LinkedBlockingQueue<String> dispatch) {
         _robots = list;
         _rpMap = rpMap;
+        _dispatch = dispatch;
         for (Robot r : _robots) {
             new Thread(r, "" + r.getId()).start();
         }
@@ -39,6 +41,7 @@ public class Dispatcher {
                     sendShutdown(r);
                 }
             }
+            while(!_dispatch.isEmpty()) System.out.println(_dispatch.poll());
         }
     }
     private boolean robotsAreRunning() {
