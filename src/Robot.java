@@ -43,6 +43,8 @@ public class Robot implements Runnable {
                         System.out.println(_id + " " + _curPt.date + ":" + tp.description + " is experiencing " +
                                             condition + " traffic at speed " + getRandomSpeed(condition));
                     }
+                } else {
+                    System.out.println(_id + " no tube found near current point: " + _curPt.lat + " " + _curPt.lon);
                 }
             } else {
                 getMorePoints();
